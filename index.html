@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BGEC 103 – The Nature of Business Communication | Week 2 Exam</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root{
+  --primary:#0f1b6e;
+  --secondary:#1a2f9e;
+  --accent:#f59e0b;
+  --teal:#0891b2;
+  --emerald:#059669;
+  --rose:#e11d48;
+  --violet:#7c3aed;
+  --white:#ffffff;
+  --glass:rgba(255,255,255,0.08);
+  --glass-border:rgba(255,255,255,0.15);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  background:linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%);
+  color:#333;
+}
+
+/* ── EMOJI 3D styling ── */
+.e3d{
+  display:inline-block;
+  font-style:normal;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,0.35));
+  transform-style:preserve-3d;
+  animation:float3d 3s ease-in-out infinite;
+}
+@keyframes float3d{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-6px) rotate(2deg)}
+}
+.e3d-spin{animation:spin3d 4s ease-in-out infinite}
+@keyframes spin3d{
+  0%{transform:rotate(0deg) scale(1)}
+  50%{transform:rotate(10deg) scale(1.1)}
+  100%{transform:rotate(0deg) scale(1)}
+}
+.e3d-pulse{animation:pulse3d 2s ease-in-out infinite}
+@keyframes pulse3d{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 4px 8px rgba(0,0,0,0.35))}
+  50%{transform:scale(1.2);filter:drop-shadow(0 8px 20px rgba(245,158,11,0.6))}
+}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;padding:20px 16px}
+.screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+/* ══ PASSWORD SCREEN ══ */
+#pw-screen{
+  background:linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%);
+  position:relative;overflow:hidden;
+}
+#pw-screen::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 20%,rgba(124,58,237,0.25) 0%,transparent 60%),
+             radial-gradient(ellipse at 70% 80%,rgba(8,145,178,0.2) 0%,transparent 60%);
+  pointer-events:none;
+}
+.pw-card{
+  background:rgba(255,255,255,0.07);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:28px;
+  padding:48px 40px;
+  max-width:440px;width:100%;
+  text-align:center;
+  box-shadow:0 32px 64px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1);
+  position:relative;z-index:1;
+}
+.pw-emoji{font-size:64px;display:block;margin-bottom:18px;
+  filter:drop-shadow(0 8px 16px rgba(0,0,0,0.4));
+  animation:float3d 3s ease-in-out infinite}
+.pw-card h2{color:#fff;font-size:1.6rem;font-weight:800;margin-bottom:8px;
+  background:linear-gradient(135deg,#fff,#a5b4fc);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text}
+.pw-card p{color:rgba(255,255,255,0.6);font-size:.9rem;margin-bottom:28px;line-height:1.6}
+.pw-label{text-align:left;display:block;color:rgba(255,255,255,0.7);
+  font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.pw-input{
+  width:100%;padding:14px 18px;
+  background:rgba(255,255,255,0.08);
+  border:1.5px solid rgba(255,255,255,0.2);
+  border-radius:14px;color:#fff;font-size:1rem;
+  outline:none;text-align:center;letter-spacing:3px;
+  transition:.3s;font-family:'Inter',sans-serif;
+}
+.pw-input::placeholder{letter-spacing:0;opacity:.4;font-size:.9rem}
+.pw-input:focus{border-color:#7c3aed;background:rgba(124,58,237,0.15);
+  box-shadow:0 0 0 3px rgba(124,58,237,0.2)}
+.pw-btn{
+  margin-top:16px;width:100%;padding:15px;
+  background:linear-gradient(135deg,#7c3aed,#4f46e5);
+  border:none;color:#fff;border-radius:14px;
+  font-size:1rem;font-weight:800;cursor:pointer;
+  letter-spacing:.5px;transition:.3s;
+  box-shadow:0 8px 24px rgba(124,58,237,0.45);
+  font-family:'Inter',sans-serif;
+}
+.pw-btn:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(124,58,237,0.6)}
+.pw-btn:active{transform:translateY(0)}
+.pw-error{color:#fca5a5;font-size:.85rem;margin-top:12px;min-height:22px;font-weight:500}
+
+/* ══ REGISTRATION SCREEN ══ */
+#reg-screen{background:linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%)}
+.reg-card{
+  background:#fff;border-radius:28px;
+  padding:44px 40px;max-width:560px;width:100%;
+  box-shadow:0 32px 80px rgba(0,0,0,0.5);
+  position:relative;overflow:hidden;
+}
+.reg-card::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(124,58,237,0.12) 0%,transparent 70%);
+  border-radius:50%;
+}
+.reg-top{text-align:center;margin-bottom:28px}
+.reg-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,#0f1b6e,#302b63);
+  color:#fff;padding:7px 20px;border-radius:30px;
+  font-size:.72rem;font-weight:800;letter-spacing:1.2px;
+  margin-bottom:14px;
+  box-shadow:0 4px 14px rgba(15,27,110,0.35);
+}
+.reg-card h1{font-size:1.5rem;font-weight:900;color:#0f1b6e;margin-bottom:6px;line-height:1.3}
+.reg-card h2{font-size:.92rem;color:#64748b;font-weight:400;margin-bottom:0}
+.info-strip{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  background:linear-gradient(135deg,#ede9fe,#dbeafe);
+  border:1px solid #c4b5fd;border-radius:12px;
+  padding:11px 16px;font-size:.8rem;color:#4f46e5;
+  font-weight:600;margin-bottom:26px;flex-wrap:wrap;text-align:center;gap:12px;
+}
+.info-strip span{display:flex;align-items:center;gap:5px}
+.field-group{margin-bottom:18px}
+.field-group label{display:block;font-size:.75rem;font-weight:800;
+  color:#374151;margin-bottom:7px;text-transform:uppercase;letter-spacing:.7px}
+.field-group input{
+  width:100%;padding:13px 16px;
+  border:2px solid #e5e7eb;border-radius:12px;
+  font-size:.95rem;outline:none;transition:.3s;
+  background:#f9fafb;font-family:'Inter',sans-serif;color:#111;
+}
+.field-group input:focus{border-color:#7c3aed;background:#fff;
+  box-shadow:0 0 0 4px rgba(124,58,237,0.1)}
+.field-group input::placeholder{color:#9ca3af}
+.start-btn{
+  width:100%;padding:16px;
+  background:linear-gradient(135deg,#0f1b6e 0%,#7c3aed 100%);
+  border:none;color:#fff;border-radius:14px;
+  font-size:1.02rem;font-weight:800;cursor:pointer;
+  letter-spacing:.5px;transition:.3s;font-family:'Inter',sans-serif;
+  box-shadow:0 8px 28px rgba(124,58,237,0.45);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.start-btn:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(124,58,237,0.6)}
+
+/* ══ EXAM SCREEN ══ */
+#exam-screen{background:linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%);
+  justify-content:flex-start;padding:0}
+
+.exam-header{
+  position:sticky;top:0;z-index:100;width:100%;
+  background:rgba(15,12,41,0.9);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;
+}
+.header-left{display:flex;flex-direction:column;gap:2px}
+.header-title{color:#fff;font-size:.85rem;font-weight:700;opacity:.95}
+.header-sub{color:rgba(255,255,255,0.5);font-size:.72rem}
+
+#timer{
+  background:linear-gradient(135deg,#f59e0b,#ef4444);
+  padding:9px 20px;border-radius:30px;
+  font-weight:900;font-size:1.05rem;
+  letter-spacing:1.5px;min-width:110px;
+  text-align:center;color:#fff;
+  box-shadow:0 4px 16px rgba(245,158,11,0.5);
+  display:flex;align-items:center;gap:7px;
+}
+#timer.warning{
+  background:linear-gradient(135deg,#dc2626,#b91c1c);
+  animation:timerPulse .8s ease-in-out infinite;
+  box-shadow:0 4px 20px rgba(220,38,38,0.6);
+}
+@keyframes timerPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+.progress-track{height:3px;background:rgba(255,255,255,0.1);width:100%}
+.progress-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#06b6d4);
+  transition:width .4s ease;border-radius:0 2px 2px 0}
+
+.exam-body{width:100%;max-width:820px;margin:0 auto;padding:28px 16px 70px}
+
+.section-header{
+  display:flex;align-items:center;gap:12px;
+  margin:32px 0 18px;
+}
+.section-pill{
+  background:linear-gradient(135deg,#7c3aed,#4f46e5);
+  color:#fff;padding:8px 20px;border-radius:30px;
+  font-size:.78rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.2px;box-shadow:0 4px 14px rgba(124,58,237,0.4);
+}
+.section-line{flex:1;height:1px;background:rgba(255,255,255,0.12)}
+
+.q-card{
+  background:rgba(255,255,255,0.97);
+  border-radius:18px;padding:24px 26px;
+  margin-bottom:14px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  border:2px solid transparent;
+  transition:.25s;position:relative;overflow:hidden;
+}
+.q-card::before{
+  content:'';position:absolute;top:0;left:0;
+  width:4px;height:100%;
+  background:#e5e7eb;transition:.25s;
+}
+.q-card.answered::before{background:linear-gradient(180deg,#7c3aed,#4f46e5)}
+.q-card.answered{border-color:rgba(124,58,237,0.15)}
+
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.q-num-badge{
+  background:linear-gradient(135deg,#ede9fe,#dbeafe);
+  color:#4f46e5;padding:3px 11px;border-radius:20px;
+  font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.7px;
+}
+.q-text{font-size:.97rem;color:#111827;font-weight:600;line-height:1.6;margin-bottom:16px}
+
+.options{display:flex;flex-direction:column;gap:7px}
+.opt-label{
+  display:flex;align-items:flex-start;gap:11px;
+  padding:11px 14px;border-radius:11px;cursor:pointer;
+  font-size:.88rem;color:#374151;
+  border:1.5px solid #e5e7eb;
+  transition:.2s;background:#fafafa;
+}
+.opt-label:hover{background:#f5f3ff;border-color:#a78bfa;color:#4c1d95}
+.opt-label.selected{background:linear-gradient(135deg,#ede9fe,#f0f9ff);
+  border-color:#7c3aed;color:#3730a3;font-weight:700}
+.opt-label input[type=radio]{accent-color:#7c3aed;width:16px;height:16px;flex-shrink:0;margin-top:2px}
+.opt-letter{
+  min-width:24px;height:24px;border-radius:6px;
+  background:#e5e7eb;color:#6b7280;
+  font-size:.72rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:.2s;
+}
+.opt-label.selected .opt-letter{background:#7c3aed;color:#fff}
+
+.submit-zone{text-align:center;padding:20px 0 10px}
+#submit-btn{
+  padding:16px 56px;
+  background:linear-gradient(135deg,#059669,#0d9488);
+  border:none;color:#fff;border-radius:16px;
+  font-size:1.05rem;font-weight:900;cursor:pointer;
+  letter-spacing:.5px;
+  box-shadow:0 8px 28px rgba(5,150,105,0.5);
+  transition:.3s;font-family:'Inter',sans-serif;
+  display:inline-flex;align-items:center;gap:10px;
+}
+#submit-btn:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(5,150,105,0.6)}
+
+/* ══ RESULT SCREEN ══ */
+#result-screen{
+  background:linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%);
+  justify-content:flex-start;padding:28px 16px 60px;align-items:center;
+}
+.result-wrap{max-width:820px;width:100%}
+
+.result-hero{text-align:center;margin-bottom:28px;color:#fff}
+.result-hero h1{font-size:1.8rem;font-weight:900;
+  background:linear-gradient(135deg,#fff,#a5b4fc);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:6px}
+.result-hero p{color:rgba(255,255,255,0.55);font-size:.88rem}
+
+.score-glass{
+  background:rgba(255,255,255,0.97);
+  border-radius:24px;padding:34px 28px;
+  text-align:center;margin-bottom:20px;
+  box-shadow:0 16px 48px rgba(0,0,0,0.4);
+}
+.score-ring{
+  position:relative;display:inline-flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  width:130px;height:130px;border-radius:50%;
+  margin:0 auto 20px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.25);
+}
+.score-ring .pct{font-size:2.2rem;font-weight:900;color:#fff;line-height:1}
+.score-ring .lbl{font-size:.65rem;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+.grade-badge{
+  display:inline-block;padding:9px 32px;border-radius:30px;
+  font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.25);letter-spacing:1px;
+}
+.grade-A{background:linear-gradient(135deg,#059669,#10b981)}
+.grade-B{background:linear-gradient(135deg,#1d4ed8,#3b82f6)}
+.grade-C{background:linear-gradient(135deg,#d97706,#f59e0b)}
+.grade-D{background:linear-gradient(135deg,#7c3aed,#8b5cf6)}
+.grade-F{background:linear-gradient(135deg,#dc2626,#ef4444)}
+
+.student-info{color:#64748b;font-size:.88rem;margin-bottom:18px;line-height:1.7}
+.student-info strong{color:#1e293b}
+
+.stats-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
+  gap:12px;margin-top:4px;
+}
+.stat-tile{
+  background:linear-gradient(135deg,#f8fafc,#f1f5f9);
+  border-radius:14px;padding:14px 10px;text-align:center;
+  border:1.5px solid #e2e8f0;
+}
+.stat-tile .val{font-size:1.25rem;font-weight:900;color:#0f1b6e}
+.stat-tile .lbl{font-size:.67rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.7px;margin-top:3px}
+
+.quote-glass{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.13);
+  backdrop-filter:blur(12px);
+  border-radius:18px;padding:22px 28px;
+  margin-bottom:22px;text-align:center;color:#fff;
+  box-shadow:0 8px 32px rgba(0,0,0,0.2);
+}
+.quote-glass blockquote{
+  font-style:italic;font-size:1.02rem;
+  line-height:1.7;margin-bottom:10px;color:rgba(255,255,255,0.9);
+}
+.quote-glass cite{font-size:.78rem;color:rgba(255,255,255,0.5);letter-spacing:.7px}
+
+.action-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
+
+.wa-btn{
+  background:linear-gradient(135deg,#25d366,#128c7e);
+  color:#fff;padding:13px 28px;border-radius:14px;
+  border:none;font-size:.92rem;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;gap:9px;
+  box-shadow:0 6px 20px rgba(37,211,102,0.45);
+  transition:.3s;font-family:'Inter',sans-serif;
+}
+.wa-btn:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(37,211,102,0.6)}
+
+.gm-btn{
+  background:linear-gradient(135deg,#ea4335,#c62828);
+  color:#fff;padding:13px 28px;border-radius:14px;
+  border:none;font-size:.92rem;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;gap:9px;
+  box-shadow:0 6px 20px rgba(234,67,53,0.45);
+  transition:.3s;font-family:'Inter',sans-serif;
+}
+.gm-btn:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(234,67,53,0.6)}
+
+.breakdown-hd{color:#fff;font-size:1rem;font-weight:800;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;letter-spacing:.3px}
+
+.q-result{
+  background:rgba(255,255,255,0.97);
+  border-radius:14px;padding:16px 18px;
+  margin-bottom:10px;border-left:5px solid #e5e7eb;
+}
+.q-result.correct{border-left-color:#10b981}
+.q-result.wrong{border-left-color:#ef4444}
+.qr-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.qr-num{font-size:.7rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.7px}
+.qr-icon{font-size:1rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2))}
+.qr-q{font-size:.87rem;color:#1e293b;font-weight:600;line-height:1.5;margin-bottom:8px}
+.qr-ans{font-size:.82rem;padding:5px 12px;border-radius:8px;margin-bottom:4px;display:inline-block;font-weight:500}
+.qr-yours{background:#fee2e2;color:#b91c1c}
+.qr-ok{background:#dcfce7;color:#15803d}
+
+footer{text-align:center;color:rgba(255,255,255,0.35);
+  font-size:.75rem;margin-top:32px;letter-spacing:.7px;line-height:1.8}
+
+/* ══ LOCKED SCREEN ══ */
+#locked-screen{background:linear-gradient(135deg,#0f0c29,#302b63)}
+.locked-box{
+  background:rgba(255,255,255,0.07);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:24px;padding:48px 40px;
+  text-align:center;max-width:420px;
+  box-shadow:0 24px 60px rgba(0,0,0,0.5);
+  color:#fff;
+}
+.locked-box h2{font-size:1.4rem;font-weight:800;margin:14px 0 10px;
+  background:linear-gradient(135deg,#fff,#a5b4fc);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.locked-box p{color:rgba(255,255,255,0.6);font-size:.9rem;line-height:1.7}
+
+/* Floating particles background */
+.particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+.particle{position:absolute;width:4px;height:4px;border-radius:50%;opacity:.15;animation:drift linear infinite}
+@keyframes drift{
+  0%{transform:translateY(100vh) translateX(0)}
+  100%{transform:translateY(-100px) translateX(80px)}
+}
+
+@media(max-width:480px){
+  .pw-card{padding:36px 24px}
+  .reg-card{padding:32px 22px}
+  .exam-header{padding:10px 14px}
+  .header-title{font-size:.78rem}
+  #timer{font-size:.88rem;padding:7px 14px}
+  .score-ring{width:110px;height:110px}
+  .score-ring .pct{font-size:1.9rem}
+  .action-row{flex-direction:column;align-items:stretch}
+  .wa-btn,.gm-btn{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- Floating particles -->
+<div class="particles" id="particles"></div>
+
+<!-- ══════════ PASSWORD SCREEN ══════════ -->
+<div id="pw-screen" class="screen active">
+  <div class="pw-card">
+    <span class="e3d" style="font-size:62px;display:block;margin-bottom:18px">🔐</span>
+    <h2>Exam Access Restricted</h2>
+    <p>Enter the password provided by your lecturer to unlock this assessment</p>
+    <label class="pw-label">🔑 &nbsp;Password</label>
+    <input id="pw-input" type="password" class="pw-input" placeholder="Enter exam password…" autocomplete="off"/>
+    <button class="pw-btn" onclick="checkPassword()">
+      <span class="e3d" style="animation:none;filter:none">🚀</span> &nbsp;Unlock Exam
+    </button>
+    <div id="pw-error" class="pw-error"></div>
+  </div>
+</div>
+
+<!-- ══════════ REGISTRATION SCREEN ══════════ -->
+<div id="reg-screen" class="screen">
+  <div class="reg-card">
+    <div class="reg-top">
+      <div class="reg-badge">
+        <span style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))">🎓</span>
+        BGEC 103 &nbsp;·&nbsp; UPSA
+      </div>
+      <h1>The Nature of Business<br/>Communication</h1>
+      <h2>Week 2 Online Assessment</h2>
+    </div>
+    <div class="info-strip">
+      <span><span class="e3d" style="font-size:18px;animation-duration:4s">📋</span> 50 Questions</span>
+      <span><span class="e3d" style="font-size:18px;animation-duration:5s">⏱️</span> 60 Minutes</span>
+      <span><span class="e3d" style="font-size:18px;animation-duration:6s">🔒</span> One Attempt</span>
+    </div>
+    <div class="field-group">
+      <label>👤 &nbsp;Full Name</label>
+      <input id="inp-name" type="text" placeholder="e.g. Kwame Mensah Asante"/>
+    </div>
+    <div class="field-group">
+      <label>🪪 &nbsp;Student ID</label>
+      <input id="inp-id" type="text" placeholder="e.g. UPSA/2024/0001"/>
+    </div>
+    <div class="field-group">
+      <label>🎯 &nbsp;Programme</label>
+      <input id="inp-prog" type="text" placeholder="e.g. BSc Business Administration"/>
+    </div>
+    <button class="start-btn" onclick="startExam()">
+      <span class="e3d" style="font-size:20px;animation:none;filter:none">✨</span>
+      Begin Examination
+      <span style="margin-left:4px">→</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════ EXAM SCREEN ══════════ -->
+<div id="exam-screen" class="screen">
+  <div class="exam-header">
+    <div class="header-left">
+      <div class="header-title">📚 BGEC 103 – Nature of Business Communication</div>
+      <div class="header-sub">Week 2 Assessment &nbsp;|&nbsp; UPSA</div>
+    </div>
+    <div id="timer"><span>⏳</span><span id="timer-text">60:00</span></div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="exam-body" id="exam-body"></div>
+</div>
+
+<!-- ══════════ RESULT SCREEN ══════════ -->
+<div id="result-screen" class="screen">
+  <div class="result-wrap">
+    <div class="result-hero">
+      <h1><span style="filter:drop-shadow(0 4px 8px rgba(0,0,0,0.4))">📊</span> &nbsp;Your Results</h1>
+      <p>BGEC 103 – Nature of Business Communication &nbsp;|&nbsp; Week 2</p>
+    </div>
+    <div class="score-glass" id="score-card"></div>
+    <div class="quote-glass" id="quote-box"></div>
+    <div class="action-row">
+      <button class="wa-btn" onclick="sendWhatsApp()">
+        <span style="font-size:20px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3))">💬</span>
+        Share on WhatsApp
+      </button>
+      <button class="gm-btn" onclick="sendGmail()">
+        <span style="font-size:20px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3))">📧</span>
+        Send via Gmail
+      </button>
+    </div>
+    <div class="breakdown-hd">
+      <span style="font-size:22px;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.3))">📝</span>
+      Question-by-Question Breakdown
+    </div>
+    <div id="breakdown"></div>
+    <footer>
+      <span style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4))">🏫</span>
+      &nbsp;HangOut Publications &nbsp;·&nbsp; UPSA<br/>
+      BGEC 103 – The Nature of Business Communication &nbsp;|&nbsp; Week 2
+    </footer>
+  </div>
+</div>
+
+<!-- ══════════ LOCKED SCREEN ══════════ -->
+<div id="locked-screen" class="screen" style="background:linear-gradient(135deg,#0f0c29,#302b63)">
+  <div class="locked-box">
+    <span style="font-size:64px;display:block;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.5));animation:float3d 3s ease-in-out infinite">🔒</span>
+    <h2>Exam Already Submitted</h2>
+    <p>You have already completed this assessment.<br/>Only <strong style="color:#a5b4fc">one attempt</strong> is allowed per student.<br/><br/>Please contact your lecturer if you believe this is an error.</p>
+  </div>
+</div>
+
+<script>
+// ══ PARTICLES ══
+(function(){
+  const c=document.getElementById('particles');
+  for(let i=0;i<20;i++){
+    const d=document.createElement('div');
+    d.className='particle';
+    const colors=['#7c3aed','#4f46e5','#06b6d4','#f59e0b','#10b981'];
+    d.style.cssText=`left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};width:${2+Math.random()*4}px;height:${2+Math.random()*4}px;animation-duration:${8+Math.random()*16}s;animation-delay:${Math.random()*8}s;opacity:${0.08+Math.random()*0.15}`;
+    c.appendChild(d);
+  }
+})();
+
+// ══ QUESTIONS ══
+const QS=[
+  // ── SECTION A: OBJECTIVES (1-30) ──
+  {s:"Section A: Objective Questions",q:"Which characteristic of business communication involves using formal language, proper grammar, and a respectful tone?",o:["Purposefulness","Adaptability","Professionalism","Action Orientation"],a:2},
+  {s:null,q:"Purposeful communication ensures that recipients understand what?",o:["The sender's personal opinions","What is expected of them and what action to take","The history of the organization","The technical jargon used"],a:1},
+  {s:null,q:"Structured communication involves organizing information in what manner?",o:["Randomly for creativity","Alphabetically","Logically and systematically","Chronologically only"],a:2},
+  {s:null,q:"Adaptability in business communication means adjusting which elements of a message?",o:["Only the font and colour","Tone, style, and content to suit different audiences","Only the length of the message","Only the channel used"],a:1},
+  {s:null,q:"Action-oriented communication provides what to guide the recipient?",o:["Historical context","Personal stories","Clear instructions or 'calls to action'","Complex jargon"],a:2},
+  {s:null,q:"Communication that follows official channels such as reports, memos, and policies is called?",o:["Informal Communication","Horizontal Communication","External Communication","Formal Communication"],a:3},
+  {s:null,q:"Communication from subordinates to superiors is known as?",o:["Downward Communication","Horizontal Communication","Upward Communication","External Communication"],a:2},
+  {s:null,q:"Which type of communication occurs between employees at the same organizational level?",o:["Upward Communication","Horizontal Communication","Downward Communication","External Communication"],a:1},
+  {s:null,q:"Oral communication that includes video conferencing, voice messages, and virtual meetings is classified as?",o:["Non-Digital Oral Communication","Written Non-Digital Communication","Digital Oral Communication","Visual Communication"],a:2},
+  {s:null,q:"Effective communication is defined as the simultaneous, identical understanding of the content and intent of a message by whom?",o:["Only the sender","Only the receiver","Both the sender and the receiver","The manager and the team"],a:2},
+  {s:null,q:"In effective communication, which formula correctly represents the outcome?",o:["Sender A sends B, Receiver C gets D","Sender A sends B, Receiver C gets B","Sender A sends D, Receiver C gets B","Sender A sends C, Receiver B gets A"],a:1},
+  {s:null,q:"Emotional disconnects in communication occur when?",o:["The channel is too formal","Either the sender or receiver is emotionally upset","The message is too long","The jargon is too technical"],a:1},
+  {s:null,q:"Perception in communication refers to the process through which people do what?",o:["Send messages to others","Receive and interpret information from the environment","Select communication channels","Write formal reports"],a:1},
+  {s:null,q:"Selective perception refers to filtering what we see and hear based on which factors?",o:["Legal requirements","Organizational policies","Our own needs, motivation, experience, and background","The sender's tone only"],a:2},
+  {s:null,q:"According to Rogers and Steinfatt (1999), a stereotype is defined as?",o:["A formal organizational rule","A generalization about some group of people that oversimplifies their culture","A type of nonverbal communication","A channel selection strategy"],a:1},
+  {s:null,q:"Semantics in communication is the study of?",o:["Channel selection","Nonverbal cues","Meaning in communication","Organizational structure"],a:2},
+  {s:null,q:"Jargon is best described as?",o:["Universal language understood by all","The language of specialized terms used by a group or profession","A type of nonverbal communication","Written communication only"],a:1},
+  {s:null,q:"Distortion in communication refers to?",o:["Choosing the wrong channel","The way meaning of communication is lost in handling or transmission","Using too much jargon","Emotional disconnects between sender and receiver"],a:1},
+  {s:null,q:"Distortion occurs mainly at which stages of communication?",o:["The feedback and context stages","The channel and receiver stages","The encoding and decoding stages","The sender and channel stages"],a:2},
+  {s:null,q:"Filtering in communication refers to?",o:["Choosing an appropriate communication channel","The intentional distortion of information to make it appear favourable","The process of decoding messages","Adapting language to the audience"],a:1},
+  {s:null,q:"Filtering may involve which of the following?",o:["Using too many nonverbal cues","Providing complete and accurate information","Deleting or delaying negative information or changing words to sound favourable","Using formal language in informal settings"],a:2},
+  {s:null,q:"Poor use of communication channels means?",o:["Using too many channels simultaneously","Choosing a channel that is inappropriate for the message or audience","Using only digital channels","Avoiding written communication"],a:1},
+  {s:null,q:"Which of the following is NOT one of the 7 Cs of communication?",o:["Clarity","Correctness","Creativity","Conciseness"],a:2},
+  {s:null,q:"Clarity in communication ensures that the message is?",o:["Long and detailed","Easy to understand, free from ambiguity","Written in technical terms","Sent through formal channels only"],a:1},
+  {s:null,q:"Correctness in communication is about ensuring?",o:["The message is brief","The accuracy of the information being conveyed","The message is delivered formally","The channel is appropriate"],a:1},
+  {s:null,q:"Completeness in communication ensures that the message?",o:["Is as short as possible","Uses only verbal communication","Includes all necessary information leaving no room for confusion","Is written in a formal style"],a:2},
+  {s:null,q:"Conciseness in communication means?",o:["Providing as much detail as possible","Delivering the message in the most efficient way avoiding unnecessary words","Using only formal language","Sending multiple messages through different channels"],a:1},
+  {s:null,q:"Consideration in communication involves being mindful of?",o:["The sender's personal preferences","The audience's perspective, emotions, and needs","The cost of the communication channel","The length of the message"],a:1},
+  {s:null,q:"Courtesy in communication involves?",o:["Being direct and blunt to save time","Being polite, respectful, and considerate in tone and word choice","Using technical jargon to show expertise","Filtering negative information"],a:1},
+  {s:null,q:"Adaptation in business communication refers to?",o:["Translating messages into different languages","Tailoring a message to a specific receiver","Choosing the most expensive communication channel","Using formal communication in all situations"],a:1},
+
+  // ── SECTION B: THEORY (31-50) ──
+  {s:"Section B: Theory Questions",q:"A doctor explaining a diagnosis using everyday language instead of medical jargon is an example of overcoming which barrier?",o:["Filtering","Emotional disconnect","Semantics (jargon)","Poor channel selection"],a:2},
+  {s:null,q:"Amazon streamlining order fulfillment and minimizing miscommunication through clarity demonstrates which benefit of effective communication?",o:["Building customer relationships only","Increased efficiency and high-quality goods and services","Facilitating innovation","Developing organizational history"],a:1},
+  {s:null,q:"In the case of Fizz Pop targeting Gen Z with TV ads, which barrier to effective communication is illustrated?",o:["Semantics","Emotional disconnect","Stereotyping","Poor use of communication channels"],a:3},
+  {s:null,q:"When Mike (junior employee) stays silent during brainstorming because he assumes his ideas won't be valued, which barrier is demonstrated?",o:["Distortion","Filtering","Selective perception","Semantics"],a:2},
+  {s:null,q:"In the conference case study where Ama's technical skills are overlooked and John's creative skills are ignored, which barrier is illustrated?",o:["Emotional disconnect","Stereotyping based on cultural background","Distortion of the message","Poor channel selection"],a:1},
+  {s:null,q:"IT trainer Yaw using terms like 'HL7 protocols' and 'SOAP-based web services' with non-technical staff is an example of which barrier?",o:["Filtering","Emotional disconnect","Perceptual bias","Semantics and jargon"],a:3},
+  {s:null,q:"An employee presenting 70% customer dissatisfaction as 'mixed feedback' with 'areas for improvement' to their manager illustrates which barrier?",o:["Semantics","Filtering","Stereotyping","Emotional disconnect"],a:1},
+  {s:null,q:"John dismissing Sarah's project plan during a meeting due to an earlier argument with his partner illustrates which barrier?",o:["Selective perception","Filtering","Emotional disconnect","Distortion"],a:2},
+  {s:null,q:"Instead of saying 'Submit the report soon,' saying 'Submit the monthly financial report by Friday at 5 PM' applies which of the 7 Cs?",o:["Courtesy","Conciseness","Completeness","Clarity"],a:2},
+  {s:null,q:"Instead of saying 'You failed to submit the report,' saying 'We did not receive the report by the deadline. Please let us know if you need assistance' applies which C?",o:["Concreteness","Clarity","Consideration","Correctness"],a:2},
+  {s:null,q:"Instead of saying 'The project will be completed soon,' saying 'The project will be completed by March 15 as per schedule' applies which C?",o:["Conciseness","Correctness","Consideration","Concreteness"],a:3},
+  {s:null,q:"Instead of saying 'Due to the fact that we have limited resources, we are unable to proceed at this particular time,' simplifying it to 'Due to limited resources, we cannot proceed now' applies which C?",o:["Clarity","Correctness","Conciseness","Completeness"],a:2},
+  {s:null,q:"Sending appointment reminders by text but discussing test results in person demonstrates which strategy for overcoming communication barriers?",o:["Avoiding filtering","Choosing the right media","Understanding frames of reference","Using feedback"],a:1},
+  {s:null,q:"A manager asking team members to submit thoughts by tomorrow and promising to address concerns in Friday's meeting demonstrates which strategy?",o:["Stereotyping avoidance","Using feedback to encourage two-way communication","Avoiding distortion","Choosing digital channels"],a:1},
+  {s:null,q:"A coffee shop holding monthly sessions where employees share ideas directly with the owner demonstrates which principle?",o:["Filtering information appropriately","Fostering an open communication climate","Using technical jargon effectively","Selecting formal communication channels"],a:1},
+  {s:null,q:"Which type of communication context does 'unofficial conversations such as casual chats or workplace gossip' belong to?",o:["Formal Communication","Upward Communication","Downward Communication","Informal Communication"],a:3},
+  {s:null,q:"Communication that is lost because the wrong medium is chosen, such as using TV ads for Gen Z audiences, is an example of which barrier?",o:["Distortion","Emotional disconnect","Poor use of communication channels","Selective perception"],a:2},
+  {s:null,q:"The principle that effective communicators must 'adapt the message to the lowest reader tactfully without offending those at higher levels' is part of which concept?",o:["Filtering","Concreteness","Adaptation","Action Orientation"],a:2},
+  {s:null,q:"Communication becomes ineffective when which of the following occurs?",o:["The sender carefully encodes the message","The receiver provides clear feedback","People misunderstand each other and misinterpret information","The channel selected is formal and structured"],a:2},
+  {s:null,q:"Regular brainstorming sessions that foster open communication enabling employees to develop innovative products relates to which benefit of effective communication?",o:["Increased efficiency and quality","Sharing information with customers","Facilitating innovation for competitive advantage","Building relationships with suppliers"],a:2},
+];
+
+const PASS="Real Estate1";
+let studentName="",studentId="",programme="";
+let timerInt,secsLeft=3600,startTime,answers=Array(50).fill(null);
+
+// ── PARTICLES ──
+function checkPassword(){
+  const v=document.getElementById("pw-input").value.trim();
+  if(v===PASS){showScreen("reg-screen")}
+  else{
+    const el=document.getElementById("pw-error");
+    el.innerHTML='<span style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))">❌</span> &nbsp;Incorrect password. Please try again.';
+    document.getElementById("pw-input").value="";
+    document.getElementById("pw-input").focus();
+  }
+}
+document.getElementById("pw-input").addEventListener("keydown",e=>{if(e.key==="Enter")checkPassword()});
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+window.addEventListener("DOMContentLoaded",()=>{
+  if(localStorage.getItem("bgec103_w2_done")==="1"){showScreen("locked-screen")}
+});
+
+function startExam(){
+  studentName=document.getElementById("inp-name").value.trim();
+  studentId=document.getElementById("inp-id").value.trim();
+  programme=document.getElementById("inp-prog").value.trim();
+  if(!studentName||!studentId||!programme){
+    alert("⚠️ Please fill in all fields before starting.");return;
+  }
+  buildExam();
+  showScreen("exam-screen");
+  startTime=Date.now();
+  timerInt=setInterval(tick,1000);
+}
+
+function buildExam(){
+  const body=document.getElementById("exam-body");
+  let html="",lastSec="";
+  QS.forEach((q,i)=>{
+    if(q.s&&q.s!==lastSec){
+      const icon=q.s.includes("A")?"🎯":"💡";
+      html+=`<div class="section-header">
+        <div class="section-pill">${icon} ${q.s}</div>
+        <div class="section-line"></div>
+      </div>`;
+      lastSec=q.s;
+    }
+    html+=`<div class="q-card" id="qc-${i}">
+      <div class="q-meta">
+        <span class="q-num-badge">Question ${i+1} / 50</span>
+      </div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">`;
+    q.o.forEach((opt,j)=>{
+      const letter=String.fromCharCode(65+j);
+      html+=`<label class="opt-label" id="lbl-${i}-${j}">
+        <input type="radio" name="q${i}" value="${j}" onchange="pick(${i},${j})"/>
+        <span class="opt-letter">${letter}</span>
+        <span>${opt}</span>
+      </label>`;
+    });
+    html+=`</div></div>`;
+  });
+  html+=`<div class="submit-zone">
+    <button id="submit-btn" onclick="confirmSub()">
+      <span style="font-size:20px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3))">✅</span>
+      Submit Examination
+    </button>
+  </div>`;
+  body.innerHTML=html;
+}
+
+function pick(qi,oi){
+  answers[qi]=oi;
+  document.getElementById(`qc-${qi}`).classList.add("answered");
+  document.querySelectorAll(`label[id^="lbl-${qi}-"]`).forEach(l=>l.classList.remove("selected"));
+  document.getElementById(`lbl-${qi}-${oi}`).classList.add("selected");
+  const done=answers.filter(a=>a!==null).length;
+  document.getElementById("progress-fill").style.width=(done/50*100)+"%";
+}
+
+function tick(){
+  secsLeft--;
+  const m=Math.floor(secsLeft/60),s=secsLeft%60;
+  document.getElementById("timer-text").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  const timerEl=document.getElementById("timer");
+  if(secsLeft<=300){
+    timerEl.classList.add("warning");
+    document.getElementById("timer").querySelector("span").textContent="🚨";
+  }
+  if(secsLeft<=0){clearInterval(timerInt);submitExam();}
+}
+
+function confirmSub(){
+  const ua=answers.filter(a=>a===null).length;
+  if(ua>0){if(!confirm(`⚠️ You have ${ua} unanswered question(s).\n\nSubmit anyway?`))return;}
+  else if(!confirm("✅ Ready to submit?\n\nThis action cannot be undone."))return;
+  clearInterval(timerInt);submitExam();
+}
+
+function submitExam(){
+  localStorage.setItem("bgec103_w2_done","1");
+  const elapsed=Math.floor((Date.now()-startTime)/1000);
+  const mm=Math.floor(elapsed/60),ss=elapsed%60;
+  const timeUsed=`${String(mm).padStart(2,"0")}m ${String(ss).padStart(2,"0")}s`;
+  let correct=0,wrongList=[];
+  QS.forEach((q,i)=>{
+    if(answers[i]===q.a)correct++;
+    else wrongList.push({num:i+1,q:q.q,yours:answers[i]===null?"No answer":q.o[answers[i]],correct:q.o[q.a]});
+  });
+  const pct=Math.round(correct/50*100);
+  let grade,gc,ringColor;
+  if(pct>=80){grade="A";gc="grade-A";ringColor="linear-gradient(135deg,#059669,#10b981)"}
+  else if(pct>=70){grade="B";gc="grade-B";ringColor="linear-gradient(135deg,#1d4ed8,#3b82f6)"}
+  else if(pct>=60){grade="C";gc="grade-C";ringColor="linear-gradient(135deg,#d97706,#f59e0b)"}
+  else if(pct>=50){grade="D";gc="grade-D";ringColor="linear-gradient(135deg,#7c3aed,#8b5cf6)"}
+  else{grade="F";gc="grade-F";ringColor="linear-gradient(135deg,#dc2626,#ef4444)"}
+
+  const quotes={
+    A:`"You have mastered the art of knowledge — your brilliance illuminates every concept. Keep shining and inspiring others!"`,
+    B:`"Great minds never rest on good — you're on the path to greatness. One more push and the top is yours!"`,
+    C:`"You've crossed the line of success today. Let this be the spark that ignites your hunger for excellence!"`,
+    D:`"Every champion was once a beginner who refused to give up. Review, reflect, and rise — your breakthrough is near!"`,
+    F:`"Today's stumble is tomorrow's strength. The greatest lessons are learned through challenge — begin again with renewed fire!"`
+  };
+
+  const gradeEmoji={A:"🏆",B:"🥈",C:"🎯",D:"📚",F:"💪"};
+
+  document.getElementById("score-card").innerHTML=`
+    <div class="score-ring" style="background:${ringColor}">
+      <div class="pct">${pct}%</div>
+      <div class="lbl">Score</div>
+    </div>
+    <div style="margin-bottom:6px">
+      <span style="font-size:28px;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.3))">${gradeEmoji[grade]}</span>
+    </div>
+    <div class="grade-badge ${gc}">Grade &nbsp;${grade}</div>
+    <div class="student-info">
+      <strong>${studentName}</strong><br/>
+      ID: <strong>${studentId}</strong> &nbsp;|&nbsp; ${programme}
+    </div>
+    <div class="stats-grid">
+      <div class="stat-tile"><div class="val">${correct}/50</div><div class="lbl">Score</div></div>
+      <div class="stat-tile"><div class="val">${pct}%</div><div class="lbl">Marks</div></div>
+      <div class="stat-tile"><div class="val">${grade}</div><div class="lbl">Grade</div></div>
+      <div class="stat-tile"><div class="val">${timeUsed}</div><div class="lbl">Time Used</div></div>
+      <div class="stat-tile"><div class="val">${wrongList.length}</div><div class="lbl">Wrong</div></div>
+    </div>`;
+
+  document.getElementById("quote-box").innerHTML=`
+    <div style="font-size:32px;margin-bottom:10px;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.4))">
+      ${{A:"✨",B:"⭐",C:"🌟",D:"🔥",F:"💡"}[grade]}
+    </div>
+    <blockquote>${quotes[grade]}</blockquote>
+    <cite>— HangOut Publications</cite>`;
+
+  let bdHtml="";
+  QS.forEach((q,i)=>{
+    const ok=answers[i]===q.a;
+    bdHtml+=`<div class="q-result ${ok?"correct":"wrong"}">
+      <div class="qr-row">
+        <span class="qr-num">Q${i+1}</span>
+        <span class="qr-icon">${ok?"✅":"❌"}</span>
+      </div>
+      <div class="qr-q">${q.q}</div>
+      ${!ok?`<span class="qr-ans qr-yours">Your answer: ${answers[i]===null?"No answer":q.o[answers[i]]}</span><br/>
+      <span class="qr-ans qr-ok">Correct: ${q.o[q.a]}</span>`:""}
+    </div>`;
+  });
+  document.getElementById("breakdown").innerHTML=bdHtml;
+
+  window._res={studentName,studentId,programme,correct,pct,grade,timeUsed,wrongList};
+  showScreen("result-screen");
+}
+
+function sendWhatsApp(){
+  const r=window._res;
+  const wq=r.wrongList.map(w=>`Q${w.num}`).join(", ")||"None";
+  const msg=`📚 *BGEC 103 – WEEK 2 EXAM RESULT*\n\n👤 Name: ${r.studentName}\n🪪 Student ID: ${r.studentId}\n🎓 Programme: ${r.programme}\n⏱️ Time Used: ${r.timeUsed}\n📊 Score: ${r.correct}/50 (${r.pct}%)\n🏅 Grade: ${r.grade}\n❌ Wrong Questions: ${wq}\n\n✨ _HangOut Publications · UPSA_`;
+  window.open(`https://wa.me/233531548864?text=${encodeURIComponent(msg)}`,"_blank");
+}
+
+function sendGmail(){
+  const r=window._res;
+  const wq=r.wrongList.map(w=>`Q${w.num}: ${w.q}\n   Your: ${w.yours}\n   Correct: ${w.correct}`).join("\n\n")||"None";
+  const body=`BGEC 103 – Week 2 Exam Result\n${"=".repeat(40)}\n\nName: ${r.studentName}\nStudent ID: ${r.studentId}\nProgramme: ${r.programme}\nTime Used: ${r.timeUsed}\nScore: ${r.correct}/50 (${r.pct}%)\nGrade: ${r.grade}\n\nWrong Questions:\n${wq}\n\n${"=".repeat(40)}\nHangOut Publications · UPSA`;
+  const url=`https://mail.google.com/mail/?view=cm&to=cudjoemensah5%40gmail.com&su=${encodeURIComponent("BGEC 103 Week 2 Result – "+r.studentName)}&body=${encodeURIComponent(body)}`;
+  window.open(url,"_blank");
+}
+</script>
+</body>
+</html>
